@@ -15,3 +15,4 @@ typedef struct Song{
 } tSong;
 
 #endif //PRO2_2023_P2_TYPES_H
+

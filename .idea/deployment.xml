@@ -5,6 +5,13 @@
       <paths name="10.11.28.50">
         <serverdata>
           <mappings>
+            <mapping deploy="/FIC_BOX/PROII2324/P2" local="$PROJECT_DIR$" web="/" />
+          </mappings>
+        </serverdata>
+      </paths>
+      <paths name="10.11.28.50 (project level)">
+        <serverdata>
+          <mappings>
             <mapping local="$PROJECT_DIR$" web="/" />
           </mappings>
         </serverdata>

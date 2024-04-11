@@ -1,3 +1,4 @@
+
 /*
  * TITLE: PROGRAMMING II LABS
  * SUBTITLE: Practical 2
@@ -6,6 +7,11 @@
  * GROUP: *.*
  * DATE: ** / ** / **
  */
+
+
+
+
+
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -77,9 +83,9 @@ int main(int nargs, char **args) {
     if (nargs > 1) {
         file_name = args[1];
     } else {
-        #ifdef INPUT_FILE
+#ifdef INPUT_FILE
         file_name = INPUT_FILE;
-        #endif
+#endif
     }
 
     readTasks(file_name);

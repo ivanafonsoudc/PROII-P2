@@ -1,2 +1,2 @@
-#Choose the input file for main (add.txt, new.txt, delete.txt, upgrade.txt...)
+#Choose the input file for main (new.txt, play.txt, upgrade.txt, delete1.txt...)
 set(input new.txt)
