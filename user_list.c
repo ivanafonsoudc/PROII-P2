@@ -8,7 +8,7 @@
  */
 
 #include "user_list.h"
-
+#include "song_list.c"
 
 
 void createEmptyListU(tListU *L){
@@ -56,21 +56,33 @@ bool insertItemU(tItemU d, tListU *L){
     if(!createNode(&q)){
         return false;
     }
-    else{
-        memcpy(&q->data,&d,sizeof(d));
-        q->next=NULLU;
-        if(isEmptyListU(*L)){
+
+    memcpy(&q->data,&d,sizeof(d));
+    q->next=NULLU;
+    if(isEmptyListU(*L)){
             *L=q;
-        }
-        else{
-            for(aux= firstU(*L);aux->next!=NULLU && strcmp(d.userName,aux->data.userName)>0;aux=aux->next);
-            q->next=aux->next;
-            aux->next=q;
+    }else{
+        if(strcmp((*L)->data.userName,q->data.userName)>0){
+            q->next=*L;
+            *L=q;
+        }else {
+            for (aux = *L; aux->next != NULLU; aux = aux->next) {
+                if (strcmp(d.userName, aux->next->data.userName) < 0) {
+                    q->next = aux->next;
+                    aux->next = q;
+                    break;
+                    }
+                }
+                if(aux->next==NULLU){
+                    aux->next=q;
+              }
+
+            }
         }
         return true;
     }
 
-}
+
 
 
 void deleteAtPositionU(tPosU p,tListU *L) {
@@ -113,7 +125,7 @@ void updateItemU(tItemU d,tPosU p,tListU *L){
 
 tPosU findItemU(tUserName d,tListU L){
     tPosU aux;
-    for(aux= firstU(L);aux!=NULLU && strcmp(d,getItemU(aux,L).userName)<0;aux=aux->next){
+    for(aux= firstU(L);aux!=NULLU && strcmp(d, getItemU(aux,L).userName)<=0;aux=aux->next){
         if(strcmp(aux->data.userName,d)==0){
             return aux;
         }
