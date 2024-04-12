@@ -1,10 +1,10 @@
 /*
  * TITLE: PROGRAMMING II LABS
- * SUBTITLE: Practical 1
- * AUTHOR 1: ***************************** LOGIN 1: **********
- * AUTHOR 2: ***************************** LOGIN 2: **********
- * GROUP: *.*
- * DATE: ** / ** / **
+ * SUBTITLE: Practica 2
+ * AUTHOR 1: Antonio Vieiro Rial LOGIN 1: antonio.vieiro
+ * AUTHOR 2: Ivan Afonso Cerdeira LOGIN 2: ivan.afonso
+ * GROUP: 2.4
+ * DATE: 12/ 04 / 24
  */
 
 #ifndef DYNAMIC_LIST_H

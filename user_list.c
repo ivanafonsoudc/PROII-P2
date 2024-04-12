@@ -1,10 +1,10 @@
 /*
  * TITLE: PROGRAMMING II LABS
- * SUBTITLE: Practical 1
- * AUTHOR 1: ***************************** LOGIN 1: **********
- * AUTHOR 2: ***************************** LOGIN 2: **********
- * GROUP: *.*
- * DATE: ** / ** / **
+ * SUBTITLE: Practica 2
+ * AUTHOR 1: Antonio Vieiro Rial LOGIN 1: antonio.vieiro
+ * AUTHOR 2: Ivan Afonso Cerdeira LOGIN 2: ivan.afonso
+ * GROUP: 2.4
+ * DATE: 12/ 04 / 24
  */
 
 #include "user_list.h"
@@ -83,11 +83,8 @@ bool insertItemU(tItemU d, tListU *L){
     }
 
 
-
-
 void deleteAtPositionU(tPosU p,tListU *L) {
     tPosU aux;
-    tItemU auxItem;
 
     if (isEmptyListU(*L)) {
         return;
@@ -106,11 +103,9 @@ void deleteAtPositionU(tPosU p,tListU *L) {
     } else {
         for (aux = *L; aux->next != NULLU; aux = aux->next) {
             if (aux->next == p) {
-                auxItem = getItemU(aux, *L);
-                deleteListS(&auxItem.songList);
                 aux->next = p->next;
-                p->next = NULLU;
                 free(p);
+                break;
             }
 
         }
@@ -125,7 +120,7 @@ void updateItemU(tItemU d,tPosU p,tListU *L){
 
 tPosU findItemU(tUserName d,tListU L){
     tPosU aux;
-    for(aux= firstU(L);aux!=NULLU && strcmp(d, getItemU(aux,L).userName)<=0;aux=aux->next){
+    for(aux= firstU(L);aux!=NULLU;aux=aux->next){
         if(strcmp(aux->data.userName,d)==0){
             return aux;
         }
