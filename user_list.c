@@ -8,7 +8,6 @@
  */
 
 #include "user_list.h"
-#include "song_list.c"
 
 
 void createEmptyListU(tListU *L){
