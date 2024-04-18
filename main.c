@@ -9,6 +9,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <ctype.h>
 
 #include "types.h"
 #include "user_list.h"
@@ -78,7 +79,7 @@ void Add(tListU *L, tUserName userName, tSongTitle songTitle, tPlayTime playTime
     tPosU pos;
     tItemU item;
     tItemS song;
-    tPosS posS;
+    tPosS posS,p;
 
     pos = findItemU(userName, *L);
 
@@ -89,15 +90,19 @@ void Add(tListU *L, tUserName userName, tSongTitle songTitle, tPlayTime playTime
         posS = findItemS(songTitle, item.songList);
 
         if (posS == NULLS) {
-            insertItemS(song, lastS(item.songList), &item.songList);
+            p=firstS(item.songList);
+            while(p!=NULLS && strcmp(songTitle,getItemS(p,item.songList).songTitle)>0){
+                p=nextS(p,item.songList);
+            }
+            insertItemS(song, p, &item.songList);
             item.totalPlayTime += playTime;
             updateItemU(item, pos, L);
-            printf("Song %s added to user %s.\n", songTitle, userName);
+            printf("* Add: user %s adds song %s\n", userName, songTitle);
         } else {
-            printf("Song %s already exists in user %s.\n", songTitle, userName);
+            printf("+ Error: Add not possible");
         }
     } else {
-        printf("User %s not found.\n", userName);
+        printf("+ Error: Add not possible");
     }
 }
 
@@ -118,7 +123,6 @@ void Upgrade(tListU *L, tUserName userName) {
 }
 
 void Play(tListU *L, tUserName userName, tSongTitle songTitle, tPlayTime playTime) {
-
     tPosU pos;
     tItemU item;
     tItemS song;
@@ -128,14 +132,15 @@ void Play(tListU *L, tUserName userName, tSongTitle songTitle, tPlayTime playTim
 
     if (pos != NULLU) {
         item = getItemU(pos, *L);
-        strcpy(song.songTitle, songTitle);
-        song.playTime = playTime;
         posS = findItemS(songTitle, item.songList);
 
         if (posS != NULLS) {
+            song = getItemS(posS, item.songList);
+            song.playTime += playTime;
+            updateItemS(song, posS, &item.songList);
             item.totalPlayTime += playTime;
             updateItemU(item, pos, L);
-            printf("* Add: user %s adds song %s\n", userName, songTitle);
+            printf("* Play: user %s plays song %s playtime %d totalplaytime %d\n", userName, songTitle, playTime, item.totalPlayTime);
         } else {
             printf("+ Error: Play not possible\n");
         }
@@ -171,29 +176,42 @@ void Stats(tListU *L) {
                 dS = getItemS(pS, d.songList);
                 printf("Song %s playtime %d\n", dS.songTitle, dS.playTime);
             }
+            printf("\n");
         }
     }
 
     printf("\nCategory  Users  TimePlay  Average\n");
-    printf("Basic\t  %d\t %d \t   %.2f\n", basic, basicPlays, (float)basicPlays / (float)basic);
-    printf("Pro\t  %d\t %d \t   %.2f\n", pro, proPlays, (float)proPlays / (float)pro);
+    if(basic == 0) {
+        printf("Basic\t  %d\t %d \t   0.00\n", basic, basicPlays);
+    } else {
+        printf("Basic\t  %d\t %d \t   %.2f\n", basic, basicPlays, (float)basicPlays/(float)basic);
+    }
+
+    if(pro == 0) {
+        printf("Pro\t  %d\t %d \t   0.00\n", pro, proPlays);
+    } else {
+        printf("Pro\t  %d\t %d \t   %.2f\n", pro, proPlays, (float)proPlays/(float)pro);
+    }
 }
 
 void Remove(tListU *L, tPlayTime maxTime) {
     tPosU p;
     tItemU d;
-    tPosS pS;
+    tPosS pS, nextPS;
     tItemS dS;
 
     for (p = firstU(*L); p != NULLU; p = nextU(p, *L)) {
         d = getItemU(p, *L);
-        for (pS = firstS(d.songList); pS != NULLS; pS = nextS(pS, d.songList)) {
+        pS = firstS(d.songList);
+        while (pS != NULLS){
             dS = getItemS(pS, d.songList);
+            nextPS = nextS(pS, d.songList);
             if (dS.playTime > maxTime) {
                 deleteAtPositionS(pS, &d.songList);
                 d.totalPlayTime -= dS.playTime;
                 updateItemU(d, p, L);
             }
+            pS = nextPS;
         }
     }
 }
@@ -228,17 +246,17 @@ void processCommand(char *commandNumber, char command, char *param1, char *param
             Stats(L);
             break;
         case 'R':
-            printf("%s %c: maxtime %s\n", commandNumber, command, param2);
-            Remove(L, atoi(param2));
+            printf("%s %c: maxtime %s\n", commandNumber, command, param1);
+            Remove(L, atoi(param1));
             break;
         default:
             break;
     }
 }
 
-void readTasks(char *filename) {
+void readTasks(char *filename,tListU *L) {
 
-    tListU L;
+
     FILE *f = NULL;
     char *commandNumber, *command, *param1, *param2, *param3;
     const char delimiters[] = " \n\r";
@@ -255,7 +273,7 @@ void readTasks(char *filename) {
             param2 = strtok(NULL, delimiters);
             param3 = strtok(NULL, delimiters);
 
-            processCommand(commandNumber, command[0], param1, param2, param3, &L);
+            processCommand(commandNumber, command[0], param1, param2, param3, L);
         }
 
         fclose(f);
@@ -268,6 +286,8 @@ void readTasks(char *filename) {
 
 int main(int nargs, char **args) {
 
+    tListU L;
+    createEmptyListU(&L);
     char *file_name = "play.txt";
 
     if (nargs > 1) {
@@ -278,7 +298,7 @@ int main(int nargs, char **args) {
         #endif
     }
 
-    readTasks(file_name);
+    readTasks(file_name, &L);
 
     return 0;
 }

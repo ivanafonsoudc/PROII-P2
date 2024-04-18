@@ -56,7 +56,7 @@ bool insertItemU(tItemU d, tListU *L){
         return false;
     }
 
-    memcpy(&q->data,&d,sizeof(d));
+    q->data=d;
     q->next=NULLU;
     if(isEmptyListU(*L)){
             *L=q;
