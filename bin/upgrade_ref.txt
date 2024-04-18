@@ -9,20 +9,32 @@
 * New: user user3 category pro
 ********************
 04 S:
-User user1 category basic numplays 0
-User user2 category pro numplays 0
-User user3 category pro numplays 0
-Category  Users  Plays  Average
-Basic         1      0     0.00
-Pro           2      0     0.00
+User user1 category basic totalplaytime 0
+No songs
+
+User user2 category pro totalplaytime 0
+No songs
+
+User user3 category pro totalplaytime 0
+No songs
+
+Category  Users  TimePlay  Average
+Basic         1         0     0.00
+Pro           2         0     0.00
 ********************
 05 U: user user1
 * Upgrade: user user1 category pro
 ********************
 06 S:
-User user1 category pro numplays 0
-User user2 category pro numplays 0
-User user3 category pro numplays 0
-Category  Users  Plays  Average
-Basic         0      0     0.00
-Pro           3      0     0.00
+User user1 category pro totalplaytime 0
+No songs
+
+User user2 category pro totalplaytime 0
+No songs
+
+User user3 category pro totalplaytime 0
+No songs
+
+Category  Users  TimePlay  Average
+Basic         0         0     0.00
+Pro           3         0     0.00

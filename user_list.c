@@ -119,11 +119,6 @@ void updateItemU(tItemU d,tPosU p,tListU *L){
 
 tPosU findItemU(tUserName d,tListU L){
     tPosU aux;
-    for(aux= firstU(L);aux!=NULLU;aux=aux->next){
-        if(strcmp(aux->data.userName,d)==0){
-            return aux;
-        }
-    }
-
-    return NULLU;
+    for(aux=firstU(L);aux!=NULLU && strcmp(aux->data.userName,d)!=0;aux=aux->next);
+    return aux;
 }

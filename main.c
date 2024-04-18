@@ -40,14 +40,14 @@ void New(tListU *L, tUserName userName, tUserCategory userCategory) {
     tItemU item;
     tPosU pos;
 
-    pos = findItemU(userName, *L);
+    pos = findItemU(userName,  *L);
 
     if(pos == NULLU) {
         strcpy(item.userName, userName);
         item.userCategory = userCategory;
         item.totalPlayTime = 0;
         createEmptyListS(&item.songList);
-        if(insertItemU(item, L)) {
+        if(insertItemU(item, L)){
         printf("* New: user %s category %s\n", userName, CategoryToString(userCategory));
         } else {
             printf("+ Error: New not possible\n");
@@ -58,19 +58,19 @@ void New(tListU *L, tUserName userName, tUserCategory userCategory) {
 
 }
 
-void Delete(tListU L, tUserName userName) {
+void Delete(tListU *L, tUserName userName) {
     tPosU pos;
     tItemU item;
 
-    pos = findItemU(userName, L);
+    pos = findItemU(userName, *L);
 
     if (pos != NULLU) {
-        item = getItemU(pos, L);
+        item = getItemU(pos, *L);
         deleteListS(&item.songList);
-        deleteAtPositionU(pos, &L);
-        printf("User %s deleted.\n", userName);
+        deleteAtPositionU(pos, L);
+        printf("* Delete: user %s category %s totalplaytime %d\n", userName, CategoryToString(item.userCategory), item.totalPlayTime);
     } else {
-        printf("User %s not found.\n", userName);
+        printf("+ Error: Delete not possible\n");
     }
 }
 
@@ -107,13 +107,13 @@ void Upgrade(tListU *L, tUserName userName) {
 
     pos = findItemU(userName, *L);
 
-    if (pos != NULLU && item.userCategory == 0) {
+    if(pos!=NULLU && getItemU(pos, *L).userCategory==0) {
         item = getItemU(pos, *L);
         item.userCategory++;
         updateItemU(item, pos, L);
-        printf("User %s upgraded.\n", userName);
+        printf("* Upgrade: user %s category %s\n", userName, CategoryToString(item.userCategory));
     } else {
-        printf("User %s not found.\n", userName);
+        printf("+ Error: Upgrade not possible\n");
     }
 }
 
@@ -135,22 +135,22 @@ void Play(tListU *L, tUserName userName, tSongTitle songTitle, tPlayTime playTim
         if (posS != NULLS) {
             item.totalPlayTime += playTime;
             updateItemU(item, pos, L);
-            printf("Song %s played by user %s.\n", songTitle, userName);
+            printf("* Add: user %s adds song %s\n", userName, songTitle);
         } else {
-            printf("Song %s not found in user %s.\n", songTitle, userName);
+            printf("+ Error: Play not possible\n");
         }
     } else {
-        printf("User %s not found.\n", userName);
+        printf("+ Error: Play not possible\n");
     }
 }
 
-void Stats(tListU L) {
+void Stats(tListU *L) {
     tPosU p;
     tItemU d;
     int basic = 0, pro = 0, basicPlays = 0, proPlays = 0;
 
-    for (p=firstU(L); p != NULLU; p = nextU(p, L)) {
-        d = getItemU(p, L);
+    for (p=firstU(*L); p != NULLU; p = nextU(p, *L)) {
+        d = getItemU(p, *L);
 
         printf("User %s category %s totalplaytime %d\n", d.userName, CategoryToString(d.userCategory), d.totalPlayTime);
 
@@ -200,12 +200,12 @@ void Remove(tListU *L, tPlayTime maxTime) {
 
 
 
-void processCommand(char *commandNumber, char command, char *param1, char *param2, char *param3, tListU L) {
+void processCommand(char *commandNumber, char command, char *param1, char *param2, char *param3, tListU *L) {
     printf("********************\n");
     switch (command) {
         case 'N':
             printf("%s %c: user %s category %s\n", commandNumber, command, param1, param2);
-            New(&L, param1, proBasic(param2));
+            New(L, param1, proBasic(param2));
             break;
         case 'D':
             printf("%s %c: user %s\n", commandNumber, command, param1);
@@ -213,15 +213,15 @@ void processCommand(char *commandNumber, char command, char *param1, char *param
             break;
         case 'A':
             printf("%s %c: user %s song %s \n", commandNumber, command, param1, param2);
-            Add(&L, param1, param2, atoi(param3));
+            Add(L, param1, param2, atoi(param3));
             break;
         case 'U':
             printf("%s %c: user %s\n", commandNumber, command, param1);
-            Upgrade(&L, param1);
+            Upgrade(L, param1);
             break;
         case 'P':
             printf("%s %c: user %s song %s minutes %s\n", commandNumber, command, param1, param2, param3);
-            Play(&L, param1, param2, atoi(param3));
+            Play(L, param1, param2, atoi(param3));
             break;
         case 'S':
             printf("%s %c:\n", commandNumber, command);
@@ -229,7 +229,7 @@ void processCommand(char *commandNumber, char command, char *param1, char *param
             break;
         case 'R':
             printf("%s %c: maxtime %s\n", commandNumber, command, param2);
-            Remove(&L, atoi(param2));
+            Remove(L, atoi(param2));
             break;
         default:
             break;
@@ -255,7 +255,7 @@ void readTasks(char *filename) {
             param2 = strtok(NULL, delimiters);
             param3 = strtok(NULL, delimiters);
 
-            processCommand(commandNumber, command[0], param1, param2, param3, L);
+            processCommand(commandNumber, command[0], param1, param2, param3, &L);
         }
 
         fclose(f);
@@ -268,14 +268,14 @@ void readTasks(char *filename) {
 
 int main(int nargs, char **args) {
 
-    char *file_name = "delete.txt";
+    char *file_name = "play.txt";
 
     if (nargs > 1) {
         file_name = args[1];
     } else {
-#ifdef INPUT_FILE
+        #ifdef INPUT_FILE
         file_name = INPUT_FILE;
-#endif
+        #endif
     }
 
     readTasks(file_name);
