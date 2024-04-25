@@ -95,16 +95,6 @@ void Add(tListU *L, tUserName userName, tSongTitle songTitle, tPlayTime playTime
     tItemS song;
     tPosS posS,p;
 
-    if(playTime<0){
-        printf("+ Error: Add not possible\n");
-        return;
-    }
-
-    if(songTitle == NULL  || songTitle[0] == '\0'){
-        printf("+ Error: Add not possible\n");
-        return;
-    }
-
     pos = findItemU(userName, *L);
 
     if(!isEmptyListU(*L)){
@@ -114,7 +104,7 @@ void Add(tListU *L, tUserName userName, tSongTitle songTitle, tPlayTime playTime
             song.playTime = playTime;
             posS = findItemS(songTitle, item.songList);
 
-            if (posS == NULLS) {
+            if (posS != NULLS) {
                 p = firstS(item.songList);
                 while (p != NULLS && strcmp(songTitle, getItemS(p, item.songList).songTitle) > 0) {
                     p = nextS(p, item.songList);
@@ -123,16 +113,26 @@ void Add(tListU *L, tUserName userName, tSongTitle songTitle, tPlayTime playTime
                 item.totalPlayTime += playTime;
                 updateItemU(item, pos, L);
                 printf("* Add: user %s adds song %s\n", userName, song.songTitle);
-            } else {
-                printf("+ Error: Add not possible");
+
+            }
+            else {
+                if(insertItemS(song, lastS(item.songList), &item.songList)){
+                    item.totalPlayTime += playTime;
+                    updateItemU(item, pos, L);
+                    printf("* Add: user %s adds song %s\n", userName, song.songTitle);
+                } else {
+                    printf("+ Error: Add not possible\n");
+                }
             }
         } else {
-            printf("+ Error: Add not possible");
+            printf("+ Error: Add not possible\n");
         }
     }else{
-        printf("+ Error: Add not possible");
+        printf("+ Error: Add not possible\n");
     }
 }
+
+
 
 void Upgrade(tListU *L, tUserName userName) {
     tPosU pos;
@@ -197,6 +197,7 @@ void Stats(tListU *L) {
 
         if(isEmptyListS(d.songList)){
             printf("No songs\n");
+            printf("\n");
         } else {
             tPosS pS;
             tItemS dS;
@@ -245,6 +246,8 @@ void Remove(tListU *L, tPlayTime maxTime) {
 
 
 }
+
+
 
 
 
