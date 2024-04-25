@@ -37,6 +37,20 @@ char* CategoryToString(tUserCategory cat){
     }
 }
 
+bool deleteListS(tListS *L){
+    tPosS aux;
+    for(aux= firstS(*L);aux<=L->lastPos;aux++){
+        deleteAtPositionS(aux,L);
+    }
+    if(isEmptyListS(*L)){
+        return true;
+    }
+    else{
+        return false;
+    }
+}
+
+
 void New(tListU *L, tUserName userName, tUserCategory userCategory) {
     tItemU item;
     tPosU pos;
@@ -81,27 +95,41 @@ void Add(tListU *L, tUserName userName, tSongTitle songTitle, tPlayTime playTime
     tItemS song;
     tPosS posS,p;
 
+    if(playTime<0){
+        printf("+ Error: Add not possible\n");
+        return;
+    }
+
+    if(songTitle == NULL  || songTitle[0] == '\0'){
+        printf("+ Error: Add not possible\n");
+        return;
+    }
+
     pos = findItemU(userName, *L);
 
-    if (pos != NULLU) {
-        item = getItemU(pos, *L);
-        strcpy(song.songTitle, songTitle);
-        song.playTime = playTime;
-        posS = findItemS(songTitle, item.songList);
+    if(!isEmptyListU(*L)){
+        if (pos != NULLU) {
+            item = getItemU(pos, *L);
+            strcpy(song.songTitle, songTitle);
+            song.playTime = playTime;
+            posS = findItemS(songTitle, item.songList);
 
-        if (posS == NULLS) {
-            p=firstS(item.songList);
-            while(p!=NULLS && strcmp(songTitle,getItemS(p,item.songList).songTitle)>0){
-                p=nextS(p,item.songList);
+            if (posS == NULLS) {
+                p = firstS(item.songList);
+                while (p != NULLS && strcmp(songTitle, getItemS(p, item.songList).songTitle) > 0) {
+                    p = nextS(p, item.songList);
+                }
+                insertItemS(song, p, &item.songList);
+                item.totalPlayTime += playTime;
+                updateItemU(item, pos, L);
+                printf("* Add: user %s adds song %s\n", userName, song.songTitle);
+            } else {
+                printf("+ Error: Add not possible");
             }
-            insertItemS(song, p, &item.songList);
-            item.totalPlayTime += playTime;
-            updateItemU(item, pos, L);
-            printf("* Add: user %s adds song %s\n", userName, songTitle);
         } else {
             printf("+ Error: Add not possible");
         }
-    } else {
+    }else{
         printf("+ Error: Add not possible");
     }
 }
@@ -195,26 +223,29 @@ void Stats(tListU *L) {
 }
 
 void Remove(tListU *L, tPlayTime maxTime) {
-    tPosU p;
-    tItemU d;
-    tPosS pS, nextPS;
-    tItemS dS;
-
-    for (p = firstU(*L); p != NULLU; p = nextU(p, *L)) {
-        d = getItemU(p, *L);
-        pS = firstS(d.songList);
-        while (pS != NULLS){
-            dS = getItemS(pS, d.songList);
-            nextPS = nextS(pS, d.songList);
-            if (dS.playTime > maxTime) {
-                deleteAtPositionS(pS, &d.songList);
-                d.totalPlayTime -= dS.playTime;
-                updateItemU(d, p, L);
-            }
-            pS = nextPS;
-        }
+    if(isEmptyListU(*L)) {
+        printf("+ Error: Remove not possible\n");
+        return;
     }
+    tPosU p = firstU(*L);
+        while(p!=NULLU){
+            tItemU item = getItemU(p,*L);
+            if(item.userCategory == 0 && item.totalPlayTime > maxTime) {
+                tPosU nextPos = nextU(p, *L);
+                deleteAtPositionU(p, L);
+                printf("Removing user %s totalplaytime %d\n", item.userName, item.totalPlayTime);
+                p = nextPos;
+
+            }else{
+                p = nextU(p, *L);
+            }
+
+
+    }
+
+
 }
+
 
 
 
@@ -255,8 +286,6 @@ void processCommand(char *commandNumber, char command, char *param1, char *param
 }
 
 void readTasks(char *filename,tListU *L) {
-
-
     FILE *f = NULL;
     char *commandNumber, *command, *param1, *param2, *param3;
     const char delimiters[] = " \n\r";
@@ -288,7 +317,7 @@ int main(int nargs, char **args) {
 
     tListU L;
     createEmptyListU(&L);
-    char *file_name = "play.txt";
+    char *file_name = "remove.txt";
 
     if (nargs > 1) {
         file_name = args[1];

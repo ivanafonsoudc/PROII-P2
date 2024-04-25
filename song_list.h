@@ -38,7 +38,7 @@ void deleteAtPositionS(tPosS p,tListS *L);
 tItemS getItemS(tPosS p,tListS L);
 void updateItemS(tItemS d,tPosS p,tListS *L);
 tPosS findItemS(tUserName d,tListS L);
-bool deleteListS(tListS *L);
+
 
 
 

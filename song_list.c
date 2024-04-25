@@ -84,18 +84,5 @@ tPosS findItemS(tSongTitle d, tListS L){
             return aux;
         }
     }
-    return NULLS;
 }
 
-bool deleteListS(tListS *L){
-    tPosS aux;
-    for(aux= firstS(*L);aux<=L->lastPos;aux++){
-        deleteAtPositionS(aux,L);
-    }
-    if(isEmptyListS(*L)){
-        return true;
-    }
-    else{
-        return false;
-    }
-}
