@@ -109,7 +109,8 @@ void Delete(tListU *L, tUserName userName) {
     }
 }
 
-void Add(tListU *L, tUserName userName, tSongTitle songTitle, tPlayTime playTime) {
+
+void Add(tListU *L, tUserName userName, tSongTitle songTitle) {
     /* Objetivo: Añadir una canción a la lista de canciones de un usuario.
      * Entrada:
      *     L: Lista de usuarios.
@@ -120,6 +121,7 @@ void Add(tListU *L, tUserName userName, tSongTitle songTitle, tPlayTime playTime
      * Precondición: La lista de usuarios ha sido creada.
      * Postcondición: La lista de usuarios contiene la canción con el título y tiempo de reproducción indicados en la lista de canciones del usuario.
      */
+
     tPosU pos;
     tItemU item;
     tItemS song;
@@ -131,7 +133,7 @@ void Add(tListU *L, tUserName userName, tSongTitle songTitle, tPlayTime playTime
         if (pos != NULLU) { //Y el usuario existe
             item = getItemU(pos, *L); //Obtiene el usuario
             strcpy(song.songTitle, songTitle); //Copia el titulo de la cancion
-            song.playTime = playTime;   //Copia el tiempo de reproduccion de la cancion
+            song.playTime = 0;   //Inicializa el tiempo de re
             posS = findItemS(songTitle, item.songList); //Busca la cancion
 
             if (posS != NULLS) {
@@ -140,14 +142,12 @@ void Add(tListU *L, tUserName userName, tSongTitle songTitle, tPlayTime playTime
                     p = nextS(p, item.songList); //Obtiene la siguiente cancion
                 }
                 insertItemS(song, p, &item.songList); //Inserta la cancion
-                item.totalPlayTime += playTime; //Actualiza el tiempo total de reproduccion
                 updateItemU(item, pos, L); //Actualiza el usuario
                 printf("* Add: user %s adds song %s\n", userName, song.songTitle);
 
             }
             else {
                 if(insertItemS(song, lastS(item.songList), &item.songList)){ //Inserta la cancion
-                    item.totalPlayTime += playTime; //Actualiza el tiempo total de reproduccion
                     updateItemU(item, pos, L); //Actualiza el usuario
                     printf("* Add: user %s adds song %s\n", userName, song.songTitle);
                 } else {
@@ -161,6 +161,8 @@ void Add(tListU *L, tUserName userName, tSongTitle songTitle, tPlayTime playTime
         printf("+ Error: Add not possible\n");
     }
 }
+
+
 
 
 
@@ -295,6 +297,8 @@ void Stats(tListU *L) {
     }
 }
 
+
+
 void Remove(tListU *L, tPlayTime maxTime) {
     /* Objetivo: Eliminar los usuarios que no han superado un tiempo de reproducción.
      * Entrada:
@@ -342,6 +346,7 @@ void Remove(tListU *L, tPlayTime maxTime) {
 
 
 
+
 void processCommand(char *commandNumber, char command, char *param1, char *param2, char *param3, tListU *L) {
     printf("********************\n");
     switch (command) {
@@ -355,7 +360,7 @@ void processCommand(char *commandNumber, char command, char *param1, char *param
             break;
         case 'A':
             printf("%s %c: user %s song %s \n", commandNumber, command, param1, param2);
-            Add(L, param1, param2, atoi(param3));
+            Add(L, param1, param2);
             break;
         case 'U':
             printf("%s %c: user %s\n", commandNumber, command, param1);
@@ -371,18 +376,21 @@ void processCommand(char *commandNumber, char command, char *param1, char *param
             break;
         case 'R':
             printf("%s %c: maxtime %s\n", commandNumber, command, param1);
-            Remove(L, atoi(param1));
+            Remove(L,atoi(param1));
             break;
         default:
             break;
     }
 }
 
-void readTasks(char *filename,tListU *L) {
+void readTasks(char *filename) {
     FILE *f = NULL;
     char *commandNumber, *command, *param1, *param2, *param3;
     const char delimiters[] = " \n\r";
     char buffer[MAX_BUFFER];
+    tListU L;
+
+    createEmptyListU(&L);
 
     f = fopen(filename, "r");
 
@@ -395,7 +403,7 @@ void readTasks(char *filename,tListU *L) {
             param2 = strtok(NULL, delimiters);
             param3 = strtok(NULL, delimiters);
 
-            processCommand(commandNumber, command[0], param1, param2, param3, L);
+            processCommand(commandNumber, command[0], param1, param2, param3, &L);
         }
 
         fclose(f);
@@ -408,9 +416,7 @@ void readTasks(char *filename,tListU *L) {
 
 int main(int nargs, char **args) {
 
-    tListU L;
-    createEmptyListU(&L);
-    char *file_name = "script_minimos/remove.txt";
+    char *file_name = "new.txt";
 
     if (nargs > 1) {
         file_name = args[1];
@@ -420,7 +426,8 @@ int main(int nargs, char **args) {
 #endif
     }
 
-    readTasks(file_name, &L);
+    readTasks(file_name);
+
 
     return 0;
 }
