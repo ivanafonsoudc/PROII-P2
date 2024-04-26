@@ -1,11 +1,11 @@
 /*
- * TITLE: PROGRAMMING II LABS
- * SUBTITLE: Practica 2
- * AUTHOR 1: Antonio Vieiro Rial LOGIN 1: antonio.vieiro
- * AUTHOR 2: Ivan Afonso Cerdeira LOGIN 2: ivan.afonso
- * GROUP: 2.4
- * DATE: 12/ 04 / 24
- */
+* TITLE: PROGRAMMING II LABS
+        * SUBTITLE: Practica 2
+* AUTHOR 1: Antonio Vieiro Rial LOGIN 1: antonio.vieiro
+        * AUTHOR 2: Ivan Afonso Cerdeira LOGIN 2: ivan.afonso
+        * GROUP: 2.4
+* DATE: 12/ 04 / 24
+*/
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -39,15 +39,15 @@ char* CategoryToString(tUserCategory cat){
 
 bool deleteListS(tListS *L){
     tPosS aux;
-    for(aux= firstS(*L);aux<=L->lastPos;aux++){
-        deleteAtPositionS(aux,L);
-    }
     if(isEmptyListS(*L)){
         return true;
+    }else{
+        for(aux= firstS(*L);aux<=L->lastPos;aux++){
+            deleteAtPositionS(aux,L);
+        }
+        return true;
     }
-    else{
-        return false;
-    }
+
 }
 
 
@@ -63,7 +63,7 @@ void New(tListU *L, tUserName userName, tUserCategory userCategory) {
         item.totalPlayTime = 0;
         createEmptyListS(&item.songList);
         if(insertItemU(item, L)){
-        printf("* New: user %s category %s\n", userName, CategoryToString(userCategory));
+            printf("* New: user %s category %s\n", userName, CategoryToString(userCategory));
         } else {
             printf("+ Error: New not possible\n");
         }
@@ -209,17 +209,17 @@ void Stats(tListU *L) {
         }
     }
 
-    printf("\nCategory  Users  TimePlay  Average\n");
+    printf("Category  Users  TimePlay  Average\n");
     if(basic == 0) {
-        printf("Basic\t  %d\t %d \t   0.00\n", basic, basicPlays);
+        printf("Basic         %d         %d     0.00\n", basic, basicPlays);
     } else {
-        printf("Basic\t  %d\t %d \t   %.2f\n", basic, basicPlays, (float)basicPlays/(float)basic);
+        printf("Basic         %d         %d     %.2f\n", basic, basicPlays, (float)basicPlays/(float)basic);
     }
 
     if(pro == 0) {
-        printf("Pro\t  %d\t %d \t   0.00\n", pro, proPlays);
+        printf("Pro           %d         %d     0.00\n", pro, proPlays);
     } else {
-        printf("Pro\t  %d\t %d \t   %.2f\n", pro, proPlays, (float)proPlays/(float)pro);
+        printf("Pro           %d         %d     %.2f\n", pro, proPlays, (float)proPlays/(float)pro);
     }
 }
 
@@ -229,17 +229,17 @@ void Remove(tListU *L, tPlayTime maxTime) {
         return;
     }
     tPosU p = firstU(*L);
-        while(p!=NULLU){
-            tItemU item = getItemU(p,*L);
-            if(item.userCategory == 0 && item.totalPlayTime > maxTime) {
-                tPosU nextPos = nextU(p, *L);
-                deleteAtPositionU(p, L);
-                printf("Removing user %s totalplaytime %d\n", item.userName, item.totalPlayTime);
-                p = nextPos;
+    while(p!=NULLU){
+        tItemU item = getItemU(p,*L);
+        if(item.userCategory == 0 && item.totalPlayTime > maxTime) {
+            deleteAtPositionU(p, L);
+            tPosU nextPos = nextU(p, *L);
+            printf("Removing user %s totalplaytime %d\n", item.userName, item.totalPlayTime);
+            p = nextPos;
 
-            }else{
-                p = nextU(p, *L);
-            }
+        }else{
+            p = nextU(p, *L);
+        }
 
 
     }
@@ -325,9 +325,9 @@ int main(int nargs, char **args) {
     if (nargs > 1) {
         file_name = args[1];
     } else {
-        #ifdef INPUT_FILE
+#ifdef INPUT_FILE
         file_name = INPUT_FILE;
-        #endif
+#endif
     }
 
     readTasks(file_name, &L);
