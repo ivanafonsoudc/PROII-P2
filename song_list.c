@@ -4,7 +4,7 @@
  * AUTHOR 1: Antonio Vieiro Rial LOGIN 1: antonio.vieiro
  * AUTHOR 2: Ivan Afonso Cerdeira LOGIN 2: ivan.afonso
  * GROUP: 2.4
- * DATE: 12/ 04 / 24
+ * DATE: 26/ 04 / 24
  */
 
 #include "song_list.h"

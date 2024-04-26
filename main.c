@@ -1,22 +1,21 @@
 /*
-* TITLE: PROGRAMMING II LABS
-        * SUBTITLE: Practica 2
-* AUTHOR 1: Antonio Vieiro Rial LOGIN 1: antonio.vieiro
-        * AUTHOR 2: Ivan Afonso Cerdeira LOGIN 2: ivan.afonso
-        * GROUP: 2.4
-* DATE: 12/ 04 / 24
-*/
+ * TITLE: PROGRAMMING II LABS
+ * SUBTITLE: Practica 2
+ * AUTHOR 1: Antonio Vieiro Rial LOGIN 1: antonio.vieiro
+ * AUTHOR 2: Ivan Afonso Cerdeira LOGIN 2: ivan.afonso
+ * GROUP: 2.4
+ * DATE: 26/ 04 / 24
+ */
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <ctype.h>
 
 #include "types.h"
 #include "user_list.h"
 
 #define MAX_BUFFER 255
 
-int proBasic(char *c){ //Funcion que devuelve 0 si es basic y 1 si es pro
+int proBasic(char *c){ //Función que devuelve 0 si es basic y 1 si es pro
     int result=strcmp(c,"basic");
     if(result==0){
         return 0;
@@ -25,7 +24,7 @@ int proBasic(char *c){ //Funcion que devuelve 0 si es basic y 1 si es pro
     }
 }
 
-char* CategoryToString(tUserCategory cat){ //Funcion que devuelve el nombre de la categoria del usuario
+char* CategoryToString(tUserCategory cat){ //Función que devuelve el nombre de la categoría del usuario
     switch(cat){
         case 0:
             return "basic";
@@ -37,13 +36,13 @@ char* CategoryToString(tUserCategory cat){ //Funcion que devuelve el nombre de l
     }
 }
 
-void deleteListS(tListS *L){ //Funcion que elimina la lista de canciones
-    if(isEmptyListS(*L)){ //Si la lista esta vacia no hace nada
+void deleteListS(tListS *L){ //Función que elimina la lista de canciones
+    if(isEmptyListS(*L)){ //Si la lista esta vacía no hace nada
         return;
     }else{
         tPosS aux;
         for(aux= firstS(*L);aux<=L->lastPos;aux++){ //Recorre la lista de canciones
-            deleteAtPositionS(aux,L); //Elimina la cancion
+            deleteAtPositionS(aux,L); //Elimina la canción
         }
     }
 }
@@ -66,9 +65,9 @@ void New(tListU *L, tUserName userName, tUserCategory userCategory) {
 
     if(pos == NULLU) {
         strcpy(item.userName, userName); //Copia el nombre del usuario
-        item.userCategory = userCategory; //Copia la categoria del usuario
-        item.totalPlayTime = 0; //Inicializa el tiempo total de reproduccion a 0
-        createEmptyListS(&item.songList); //Crea una lista de canciones vacia
+        item.userCategory = userCategory; //Copia la categoría del usuario
+        item.totalPlayTime = 0; //Inicializa el tiempo total de reproducción a 0
+        createEmptyListS(&item.songList); //Crea una lista de canciones vacía
         if(insertItemU(item, L)){ //Inserta el usuario en la lista
             printf("* New: user %s category %s\n", userName, CategoryToString(userCategory));
         } else {
